@@ -1,3 +1,6 @@
+git reset HEAD
+git checkout -- filename
+git commit --amend
 43
 insert 30
 insert 17

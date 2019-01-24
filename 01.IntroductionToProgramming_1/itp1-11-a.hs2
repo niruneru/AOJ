@@ -1,0 +1,60 @@
+import Control.Applicative
+
+data Dice = Dice { top    :: Int
+                 , bottom :: Int
+                 , front  :: Int
+                 , back   :: Int
+                 , left   :: Int
+                 , right  :: Int
+                 } deriving (Show)
+
+toN :: Dice -> Dice
+toN dice = Dice { top    = front  dice
+                , bottom = back   dice
+                , front  = bottom dice
+                , back   = top    dice
+                , left   = left   dice
+                , right  = right  dice
+                }
+
+toS :: Dice -> Dice
+toS dice = Dice { top    = back   dice
+                , bottom = front  dice
+                , front  = top    dice
+                , back   = bottom dice
+                , left   = left   dice
+                , right  = right  dice
+                }
+
+toE :: Dice -> Dice
+toE dice = Dice { top    = left   dice
+                , bottom = right  dice
+                , front  = front  dice
+                , back   = back   dice
+                , left   = bottom dice
+                , right  = top    dice
+                }
+
+toW :: Dice -> Dice
+toW dice = Dice { top    = right  dice
+                , bottom = left   dice
+                , front  = front  dice
+                , back   = back   dice
+                , left   = top    dice
+                , right  = bottom dice
+                }
+
+main = do
+    [a, b, c, d, e, f] <- map read . words <$> getLine
+    let dice = Dice { top = a, front = b, right = c, left = d, back = e, bottom = f}
+    mvstr <- getLine
+    print $ move dice mvstr
+
+move :: Dice -> String -> Int
+move dice [] = top dice
+move dice (x:xs) =
+    case x of
+      'S' -> move (toS dice) xs
+      'N' -> move (toN dice) xs
+      'E' -> move (toE dice) xs
+      _   -> move (toW dice) xs
